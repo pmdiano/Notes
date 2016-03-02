@@ -58,3 +58,25 @@ var global = function(){
 var values = [1, 2, 3, 4, 5, 6, 7, 8];
 var max = Math.max.apply(Math, values);
 ```
+# 第六章 面向对象的程序设计
+## 6.1 理解对象
+两种属性：数据属性和访问器属性。
+
+数据属性：
++ `[[configurable]]`
++ `[[Enumerable]]`
++ `[[Writable]]`
++ `[[Value]]`
+
+要修改属性默认的特性，须使用`Object.defineProperty()`方法。把`configurable`改为`false`后就不能改回来了。
+
+访问器属性：
++ `[[Configurable]]`
++ `[[Enumerable]]`
++ `[[Get]]`
++ `[[Set]]`
+访问器属性须使用`Object.defineProeprty()`来定义。
+
+定义多个属性：`Object.defineProperties()`。
+
+读取属性的特性：`Object.getOwnPropertyDescriptor()`。
