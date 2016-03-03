@@ -298,3 +298,32 @@ function Person(name, age, job) {
 }
 ```
 在这种模式创建的对象中，除了使用`sayName()`方法以外，没有其他办法访问`name`的值。
+
+## 6.3 继承
+JavaScript中无法实现接口继承。只支持实现继承，而且其实现继承主要是依靠原型链来实现的。
+### 6.3.1 原型链
+利用原型让一个引用类型继承另一个引用类型的属性和方法。每个构造函数都有一个原型对象，原型对象都包含一个指向构造函数的指针，而实例都包含一个指向原型对象的内部指针。
+```javascript
+function SuperType(){
+    this.property = true;
+}
+SuperType.prototype.getSuperValue = function(){
+    return this.property;
+};
+
+function SubType(){
+    this.subproperty = false;
+}
+
+// 继承了SuperType
+SubType.prototype = new SuperType();
+
+SubType.prototype.getSubValue = function(){
+    return this.subproperty;
+};
+
+var instance = new SubType();
+console.log(instance.getSuperValue());  // true
+console.log(instance.getSubValue());    // false
+```
+这里我们没有使用`SubType`的默认原型，而是给了它一个新原型；这个新原型就是`SuperType`的实例。此外，`instance.constructor`现在指向的是SuperType。一句话，`SubType`继承了`SuperType`，`SuperType`继承了`Object`。当调用`instance.toString()`时，实际上调用的是保存在`Object.prortotype`中的那个方法。
