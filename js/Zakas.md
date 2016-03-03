@@ -177,3 +177,124 @@ function hasProrotypeProperty(object, name){
 取得对象上所有可枚举的实例属性：`Object.keys()`（ECMAScript 5)
 
 取得所有实例属性，无论它是否可枚举：`Object.getOwnPropertyNames()`
+
+更简单的原型语法：
+```javascript
+function Person(){
+}
+
+Person.prototype = {
+  name : "Nicholas",
+  age : 29,
+  job : "Software Engineer",
+  sayName : function() {
+    alert(this.name);
+  }
+};
+
+// 重设构造函数，只适用于ECMAScript 5兼容的browser
+Object.defineProperty(Person.prototype, "constructor", {
+  enumerable: false,
+  value: Person
+});
+```
+原生的应用类型，都是采用这种模式创建的。`Object`, `Array`, `String`，等等，都在其构造函数的原型上定义了方法，且可以定义新方法（并不推荐这么做）。
+```javascript
+alert(typeof Array.prorotype.sort);       // "function"
+alert(typeof String.prorotype.substring); // "function"
+
+String.prototype.startWith = function (text) {
+  return this.indexOf(text) == 0;
+};
+
+var msg = "Hello world!";
+console.log(msg.startWith("Hello"));
+```
+
+原型对象也有问题。原型中所有属性是被很多实例共享的，这对于函数非常合适，对于包含基本值的属性倒也说得过去，但对于包含引用类型值的属性来说，问题就比较突出了。
+
+### 6.2.4 组合使用构造函数模式和原型模式
+创建自定义类型的最常见方式。构造函数模式用于定义实例属性，而原型模式用于定义方法和共享的属性。且支持像构造函数传递参数。
+```javascript
+function Person(name, age, job) {
+    this.name = name;
+    this.age = age;
+    this.job = job;
+    this.friends = ["Shelby", "Court"];
+}
+
+Person.prototype = {
+    constructor : Person,
+    sayName : function() {
+        console.log(this.name);
+    }
+}
+
+var person1 = new Person("Nicholas", 29, "Software Engineer");
+var person2 = new Person("Greg", 27, "Doctor");
+
+person1.friends.push("Van");
+console.log(person1.friends);
+console.log(person2.friends);
+console.log(person1.friends === person2.friends);
+console.log(person1.sayName === person2.sayName);
+```
+
+### 6.2.5 动态原型类型
+```javascript
+function Person(name, age, job) {
+    this.name = name;
+    this.age = age;
+    this.job = job;
+
+    if (typeof this.sayName != "function") {
+        Person.prototype.sayName = function() {
+            console.log(this.name);
+        };
+    }
+}
+
+var person1 = new Person("Nicholas", 29, "Software Engineer");
+person1.sayName();
+```
+使用动态原型模式时，不能使用对象字面量重写原型。如果在已经创建了实例的情况下重写原型，那么就会切断现有实例与新原型之间的联系。
+
+### 6.2.6 寄生构造函数模式
+```javascript
+function Person(name, age, job) {
+    var o = new Object();
+    o.name = name;
+    o.age = age;
+    o.job = job;
+    o.sayName = function() {
+        console.log(this.name);
+    };
+    return o;
+}
+
+var p1 = new Person("Nicholas", 29, "Software Engineer");
+var p2 = new Person("Greg", 27, "Doctor");
+p1.sayName();
+p2.sayName();
+console.log(p1.sayName === p2.sayName);
+```
+除了使用`new`操作符并把使用的包装函数叫做构造函数之外，这个模式跟工厂模式其实是一样的。不能依赖`instanceof`操作符来确定对象类型。
+
+### 6.2.7 稳妥构造函数模式（durable objects）
+指没有公共属性，而且其方法也不引用`this`的对象。与寄生构造函数相似，有两点不同：一是新创建的实例方法不引用`this`，二是不使用`new`操作符调用构造函数。
+```javascript
+function Person(name, age, job) {
+  var o = new Object();
+
+  // 在这里定义私有变量和函数
+
+  // 添加方法
+  o.sayName = function() {
+    alert(name);
+  };
+
+  // 返回对象
+  return o;
+}
+```
+在这种模式创建的对象中，除了使用`sayName()`方法以外，没有其他办法访问`name`的值。
