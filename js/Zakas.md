@@ -327,3 +327,85 @@ console.log(instance.getSuperValue());  // true
 console.log(instance.getSubValue());    // false
 ```
 这里我们没有使用`SubType`的默认原型，而是给了它一个新原型；这个新原型就是`SuperType`的实例。此外，`instance.constructor`现在指向的是SuperType。一句话，`SubType`继承了`SuperType`，`SuperType`继承了`Object`。当调用`instance.toString()`时，实际上调用的是保存在`Object.prortotype`中的那个方法。
+
+确定原型和实例关系的两种方法：
+
+1. `instanceof`操作符
+2. `isPrototype()`方法
+
+```javascript
+alert(instance instanceof Object);      // true
+alert(instance instanceof SuperType);   // true
+alert(instance instanceof Subtype);     // true
+
+alert(Object.prototype.isPrototypeOf(instance));    // true
+alert(SuperType.prototype.isPrototypeOf(instance)); // true
+alert(SubType.prototype.isPrototypeOf(instance));   // true
+```
+若子类型需要重写超类型中的某个方法，给原型添加方法的代码一定要放在替换原型的语句之后。
+
+原型链的问题：原型是另一个类型的实例，于是，所有新类型的实例都共享了创建原型链的那个另一个类型的实例的属性。实践中很少会单独使用原型链。
+
+### 6.3.2 借用构造函数 (constructor stealing)
+有时也叫做伪造对象或经典继承。在子类型构造函数的内部调用超类型构造函数。
+```javascript
+function SuperType(){
+  this.colors = ["red", "blue", "green"];
+};
+
+function SubType(){
+  // 继承了SuperType
+  SuperType.call(this);
+}
+
+var instance1 = new SubType();
+instance1.colors.push("black");
+alert(instance1.colors);  // "red,blue,green,black"
+
+var instance2 = new SubType();
+alert(instance2.colors);  // "red,blue,green"
+```
+`call`那一句实际上实在（未来将要）新创建的`SubType`实例的环境下调用了`SuperType`的构造函数。相对原型链而言，此方法一个很大的优势是可以在子类型构造函数中向超类型构造函数传递参数。但也无法避免构造函数模式存在的问题 - 无函数复用。而且在超类型的原型中定义的方法，对子类型而言也是不可见的。这种方法也是很少单独使用的。
+
+### 6.3.3 组合继承（combination inheritance）
+也叫伪经典继承，指的是将原型链和借用构造函数的技术组合到一块。使用原型链实现对原型属性和方法的继承，借用构造函数来实现对实例属性的继承。
+```javascript
+function SuperType(name){
+    this.name = name;
+    this.colors = ["red", "blue", "green"];
+}
+
+SuperType.prototype.sayName = function(){
+    console.log(this.name);
+};
+
+function SubType(name, age){
+    // 继承属性
+    SuperType.call(this, name);
+
+    this.age = age;
+}
+
+// 继承方法
+SubType.prototype = new SuperType();
+
+SubType.prototype.sayAge = function(){
+    console.log(this.age);
+};
+
+var instance1 = new SubType("Nicholas", 29);
+instance1.colors.push("black");
+console.log(instance1.colors);
+instance1.sayName();
+instance1.sayAge();
+
+var instance2 = new SubType("Greg", 27);
+console.log(instance2.colors);
+instance2.sayName();
+instance2.sayAge();
+
+var instance3 = new SuperType("Jack");
+console.log(instance3.colors);
+instance3.sayName();
+```
+这是JavaScript中最常用的继承模式。
