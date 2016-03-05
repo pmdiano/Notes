@@ -409,3 +409,78 @@ console.log(instance3.colors);
 instance3.sayName();
 ```
 这是JavaScript中最常用的继承模式。
+
+### 6.3.4 原型式继承
+ECMAScript 5新增的方法：`Object.create()`。在传入一个参数的情况下，与如下`create()`方法行为相同：
+```javascript
+function object(o){
+  function F(){}
+  F.prototype = o;
+  return new F();
+}
+```
+`Object.create()`方法的第二个参数与`Object.defineProperties()`方法的第二个参数格式相同，每个属性都是通过自己的描述符定义的。
+```javascript
+var person = {
+  name: "Nicholas",
+  friends: ["Shelby", "Court", "Van"]
+};
+
+var anotherPerson = Object.create(person, {
+  name: {
+    value: "Greg"
+  }
+});
+```
+包含引用类型值的属性始终都会共享相应的值，就像使用原型模式一样。
+
+### 6.3.5 寄生式继承
+```javascript
+function createAnother(original){
+  var clone = object(original);
+  clone.sayHi = function(){
+    console.log("hi");
+  };
+  return clone;
+}
+
+var person = {
+  name: "Nicholas",
+  friends: ["Shelby", "Court", "Van"]
+};
+
+var anotherPerson = createAnother(person);
+anotherPerson.sayHi();
+```
+用此种方式添加函数对象，会由于不能做到函数复用而降低效率。
+
+### 6.3.6 寄生组合式继承
+组合继承是最常用的，它的不足是会调用两次超类型构造函数：一次是在创建子类型原型的时候，另一次是在子类型构造函数内部。寄生组合式继承没有这个问题，一般认为是最理想的。
+```javascript
+function inheritPrototype(subType, superType) {
+    var prototype = object(superType.prototype);    // 创建对象
+    prototype.constructor = subType;    // 增强对象
+    subType.prototype = prototype;      // 指定对象
+}
+
+function SuperType(name){
+    this.name = name;
+    this.colors = ['red', 'blue', 'green'];
+}
+
+SuperType.prototype.sayName = function(){
+    console.log(this.name);
+}
+
+function SubType(name, age){
+    SuperType.call(this, name);
+
+    this.age = age;
+}
+
+inheritPrototype(SubType, SuperType);
+
+SubType.prototype.sayAge = function(){
+    console.log(this.age);
+}
+```
