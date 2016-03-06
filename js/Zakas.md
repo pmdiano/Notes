@@ -484,3 +484,134 @@ SubType.prototype.sayAge = function(){
     console.log(this.age);
 }
 ```
+
+# 第七章 函数
+函数声明提升（function declaration hoisting）：执行代码之前会先读取函数声明，因此可以把函数声明放在调用之后。函数表达式不是函数声明，故应在调用之前定义。
+## 7.1 递归
+`arguments.callee`：
+```javascript
+function factorial(num){
+  if (num <= 1){
+    return 1;
+  } else {
+    return num * arguments.callee(num-1);
+  }
+}
+```
+但严格模式下不能通过脚本访问`arguments.calle`。可以使用命名函数表达式：
+```javascript
+var factorial = (function f(num){
+  if (num <= 1){
+    return 1;
+  } else {
+    return num * f(num-1);
+  }
+});
+```
+
+## 7.2 闭包
+闭包是指有权访问另一个函数作用域中的变量的函数。创建闭包的常见方法，就是在一个函数内部创建另一个函数。
+### 7.2.1 闭包与变量
+```javascript
+function createFunctions(){
+    var result = new Array();
+
+    for (var i = 0; i < 10; i++) {
+        result[i] = function(){
+            return i;
+        };
+    }
+
+    return result;
+}
+
+createFunctions().forEach((f) => {
+    console.log(f());   // all 10
+});
+```
+
+```javascript
+function createFunctions(){
+    var result = new Array();
+
+    for (var i=0; i < 10; i++){
+        result[i] = function(num){
+            return function(){
+                return num;
+            }
+        }(i);
+    }
+
+    return result;
+}
+
+createFunctions().forEach((f) => {
+    console.log(f());   // 0..9
+});
+```
+### 7.2.2 关于`this`对象
+匿名函数的执行环境具有全局性，因此其`this`对象通常指向`window`。当然，在通过`call()`或`apply()`改变函数执行环境的情况下，`this`就会指向其他对象。
+```javascript
+global.name = "Global";
+
+var object = {
+    name : "My Object",
+
+    getNameFunc : function(){
+        return function(){
+            return this.name;
+        };
+    }
+};
+
+console.log(object.getNameFunc()()); // Global - 非严格模式下；严格模式下出错
+```
+
+```javascript
+global.name = "Global";
+
+var object = {
+    name : "My Object",
+
+    getNameFunc : function(){
+        var that = this;
+        return function(){
+            return that.name;
+        };
+    }
+};
+
+console.log(object.getNameFunc()()); // My Object
+```
+
+`this`的值还有可能以外地改变：
+```javascript
+global.name = "Global";
+
+var object = {
+    name : "My object",
+
+    getName: function(){
+        return this.name;
+    }
+};
+
+var log = function(msg){
+    console.log(msg);
+}
+
+log(object.getName());      // "My object"
+log((object.getName)());    // "My object"
+log((object.getName = object.getName)());   // "Gloabl" - 非严格模式下
+```
+## 7.3 模仿块级作用域
+## 7.4 私有变量
+
+# 第八章 BOM
+## 8.1 window对象
+### 8.1.1 全局作用域
+`window`对象同时扮演着ECMAScript中`Global`对象的角色。所有在全局作用域中声明的变量、函数都会变成`window`对象的属性和方法。定义全局变量与在`window`对象上直接定义属性还是有一点差别：全局变量不能通过`delete`操作符删除，而直接在`window`对象上定义的属性可以。尝试访问未声明的变量会抛出错误，但是通过查询`window`对象，可以知道某个可能未声明的变量是否存在。
+```javascript
+var newValue = oldValue;        // 抛出错误
+var newValue = window.oldValue; // undefined
+```
