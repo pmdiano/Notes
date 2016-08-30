@@ -1,5 +1,7 @@
 | Command       | Meaning       |
 | ------------- | ------------- |
+| i             | append here   |
+| a             | append after  |
 | I             | append at beginning of current line that is non-whitespace |
 | A             | append at end of current line |
 |               |               |
