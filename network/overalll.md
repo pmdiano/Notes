@@ -31,3 +31,11 @@ sendfile系统调用可以将磁盘文件的特定部分直接传送到代表客
 + 一个线程处理一个连接，非阻塞I/O，Apache的worker多路处理模块便采用这种方法。实际测试中，这种方式的表现并不比prefork有太大的优势。人们几乎很少使用它。
 + 一个进程处理多个连接，非阻塞I/O，使用select/poll/epoll
 + 一个线程处理多个连接，异步I/O，目前很少有web服务器支持这种真正意义上的异步I/O。
+
+HTTP响应头中同时含有Expires和Cache-Control时，浏览器会优先考虑Cache-Control。对于没有Cache-Control的情况，浏览器则会服从Expires的指示。
+
+Varnish：反向代理（Caching HTTP reverse proxy）。varnishstat：命令行的状态监控程序。
+
+Cacti：监控平台。
+
+ESI：Edge Side Includes，反向代理服务器可以做到这一点，可以像SSI（Server Side Include）一样在网页中嵌入子页面。不同的是，SSI是在Web服务器端组装内容，而ESI则是在HTTP代理服务器上组装内容，包括反向代理。

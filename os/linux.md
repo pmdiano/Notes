@@ -7,3 +7,9 @@ top查看进程状态时，RES值表示其占用的物理内存空间，SWAP值�
 strace: 查看进程的系统调用。
 
 改变最大文件描述符数量： `ulimit -n 30000`（需在root身份下）
+
+uptime: 查看系统已运行时间。
+
+`/etc/hosts`
+
+vmstat系统工具：可以观察物理内存和swap的使用情况。
