@@ -36,3 +36,10 @@ select * from key_t where key1=1
 select * from key_t where key1=1 and key2=2
 select * from key_t where key1=1 and key2=2 and key3=3
 ```
+
+Using filesort和Using temporary非常不受欢迎，它们越少越好。组合索引可能产生副作用（normal_key）。
+
+将数据表转为MyISAM类型：
+```
+alter table key_t type=myisam;
+```
