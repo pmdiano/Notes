@@ -39,3 +39,16 @@ Varnish：反向代理（Caching HTTP reverse proxy）。varnishstat：命令行
 Cacti：监控平台。
 
 ESI：Edge Side Includes，反向代理服务器可以做到这一点，可以像SSI（Server Side Include）一样在网页中嵌入子页面。不同的是，SSI是在Web服务器端组装内容，而ESI则是在HTTP代理服务器上组装内容，包括反向代理。
+
+HTTP层面以下的负载均衡：数据链路层（第二层），网络层（第三层），传输层（第四层）都可以实现不同机制的负载均衡，这些负载均衡调度器的工作必须由Linux内核来实现。Linux 2.4内核开始，其内置的Netfilter模块便可以修改IP数据包。iptables是用户空间一个命令行工具，可以通过它来对Netfilter的过滤表进行插入、修改或删除等操作。iptables最多的应用场景就是防火墙了。比如以下这段简单的iptables规则，告诉内核只允许外部网络通过TCP与这台服务器的80端口建立连接，这项规则可以很好地应用在Web服务器上：
+```
+iptables -F INPUT
+iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
+iptables -P INPUT DROP
+```
+
+IPVS（IP Virtual Server）也工作在Linux内核中，更专注于实现IP负载均衡。IPVS的管理工具是ipvsadm，提供了基于命令行的配置界面，可以通过它快速实现负载均衡系统，也成为LVS（Linux Virtual Server）。
+
+不同于NAT机制，直接路由方式下（LVS-DR）的负载均衡调度器工作在数据链路层（第二层），通过修改数据包的目标MAC地址，将数据包转发到实际服务器上，并且实际服务器的响应数据包将直接发送给客户端，而不经过调度器。实际服务器必须接入外部网络。（RFC1918规定的私有IP地址范围是：10.0.0.0 - 12.255.255.255, 即10/8 prefix; 172.16.0.0 - 172.31.255.255，即172.16/12 prefix；192.168.0.0 - 192.168.255.255，即192.168/16 prefix）。与LVS-DR的原理非常类似，基于IP隧道（IP Tunneling）的负载均衡系统同样可以用LVS来实现，称为LVS-TUN。一些CDN服务便是基于IP隧道技术来实现的。
+
+对于调度器，转移请求的机制注定它存在单点故障。为此，我们必须通过其他方法来有效实现故障平滑转移。Heartbeat可以很好地解决这个问题。简单地说，我们可以准备一台备用调度器，通过运行Heartbeat对主调度器进行心跳检测，一旦发现主调度器停止心跳，便立即启动故障转移，接管主调度器，这个接管过程包括IP别名变更、相关服务的启动等。随后，一旦主调度器恢复后，备用调度器便自动将相关资源转交回主调度器。如果希望让物理层设备的网线不存在单点故障，可以用Linux Bonding技术将多条线路绑定在一台服务器的多个网卡上。查看内核是否支持Bonding：`modprobe -l | grep bonding`。

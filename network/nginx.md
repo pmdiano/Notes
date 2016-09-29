@@ -23,3 +23,12 @@ upstream backend {
 }
 ```
 HAProxy也是一款主流的反向代理服务器。
+
+粘滞回话（Sticky Sessions）可以用用户的IP地址进行Hash计算并散列到不同的后端服务器上。在Nginx中配置：
+```
+upstream backend {
+    ip_hash;
+    server 10.0.1.200:80;
+    server 10.0.1.201:80;
+}
+此外，也可以利用Cookies机制来设计持久性算法。

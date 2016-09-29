@@ -15,3 +15,15 @@ uptime: 查看系统已运行时间。
 `/etc/hosts`
 
 vmstat系统工具：可以观察物理内存和swap的使用情况。
+
+iptables命令
+
+添加默认网关：`route add default gw 10.0.1.50`
+
+查看内核中是否已经安装IPVS模块：`modprobe -l | grep ipvs`。IPVS的管理工具是ipvsadm，提供了基于命令行的配置界面，可以通过它快速实现负载均衡系统，也成为LVS（Linux Virtual Server）。
+
+ifconfig命令
+
+arp命令
+
+查看Bonding：`cat /proc/net/bonding/bond0`
