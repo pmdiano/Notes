@@ -85,3 +85,15 @@ tmp_table_size选项可以设置用来存储临时表的内存空间大小。
 线程池可以在my.conf中设置以下选项：`thread_cache_size = 100`。
 
 范式是对关系数据库中关系的一定要求，不同程度的要求为不同的范式，满足最低要求的称为第一范式（1NF），在此基础上满足进一步要求的称为第二范式（2NF）。在实际的关系模式设计中，我们通常遵循第三范式（3NF），要求在一个数据表中，非主键字段之间不能存在依赖关系。
+
+MySQL的主从复制是依据主服务器的二进制日志进行的。这种复制是异步进行的，主服务器上对于所有更新操作记录二进制文件，这部分额外开销对性能大概有1%的影响。读写分离：对于所有的更新操作，我们必须将它作用于主服务器上。
+
+数据库返反向代理：MySQL可以用MySQL Proxy，它工作在应用程序和MySQL服务器之间，负责所有请求和相应数据的转发。MySQL Proxy通过Lua脚本来描述转发规则。MySQL Proxy默认监听在4040端口，我们可以在启动时通过选项参数来指定后端的MySQL服务器：
+```
+mysql-proxy \
+--proxy-read-only-backend-addresses=10.0.1.202:3306 \
+--proxy-backend-addresses=10.0.1.201:3306 \
+--proxy-lua-script=/etc/mysql-proxy/rw-splitting.lua &
+```
+
+分区反向代理：Spock Proxy，基于MySQL Proxy。

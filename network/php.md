@@ -21,3 +21,22 @@ xdebug.profiler_output_dir = /tmp/xdebug
 xdebug.profiler_output_name = cachegrind.output.%p // "%p"是运行时PHP解释器所在的进程PID
 ```
 KCacheGrind是一个GUI分析性能记录文件的工具。
+
+PHP编写的用于分发文件的例子：
+```php
+<?php
+$conn = ssh2_connect("10.0.1.201", 22);
+ssh2_auth_password($conn, "user", "pwd");
+ssh2_scp_send($conn, "/home/user/list.htm", "/home/user/list.htm", 0644);
+?>
+```
+
+使用SFTP的例子：
+```php
+<?php
+$conn = ssh2_connect("10.0.1.201", 22);
+ssh2_auth_password($conn, "user", "pwd");
+$sftp = ssh2_sftp($conn);
+ssh2_sftp_mkdir($sftp, "/home/user/newdir", 0666);
+?>
+```
