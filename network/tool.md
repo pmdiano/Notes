@@ -1,0 +1,1 @@
+Connection refused issue: 在服务器上可以通过`telnet localhost <port>`命令来查看某个端口是否打开，在客户端则是`telnet <server> <port>`。
