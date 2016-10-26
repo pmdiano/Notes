@@ -97,3 +97,126 @@ mysql-proxy \
 ```
 
 分区反向代理：Spock Proxy，基于MySQL Proxy。
+
+[登录](http://www.cnblogs.com/mr-wid/archive/2013/05/09/3068229.html)：`mysql -h 主机名 -u 用户名 -p`
+
+显示数据库：`show databases;`
+
+创建数据库：`create database 数据库名 [其它选项];`
+
+选择所要操作的数据库：一是在登录数据库时指定，`mysql -D 所选择的数据库名 -h 主机名 -u 用户名 -p`，二是在登录后使用 `use 数据库名;`
+
+显示表：`show tables;`
+
+创建表：`create table 表名称(列声明);`，如下例子：
+```sql
+mysql> create table students
+    -> (
+    -> id int unsigned not null auto_increment primary key,
+    -> name char(8) not null,
+    -> sex char(4) not null,
+    -> age tinyint unsigned not null,
+    -> tel char(13) null default "-"
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+```
+也可以将语句保存为sql文件：`mysql -D 数据库名 -u root -p < createtable.sql`
+
+查看已创建的表的详细信息：`describe 表名;`:
+```
+mysql> describe students;
++-------+---------------------+------+-----+---------+----------------+
+| Field | Type                | Null | Key | Default | Extra          |
++-------+---------------------+------+-----+---------+----------------+
+| id    | int(10) unsigned    | NO   | PRI | NULL    | auto_increment |
+| name  | char(8)             | NO   |     | NULL    |                |
+| sex   | char(4)             | NO   |     | NULL    |                |
+| age   | tinyint(3) unsigned | NO   |     | NULL    |                |
+| tel   | char(13)            | YES  |     | -       |                |
++-------+---------------------+------+-----+---------+----------------+
+5 rows in set (0.02 sec)
+```
+
+向表中插入数据：`insert [into] 表名 [(列名1, 列名2, 列名3, ...)] values (值1, 值2, 值3, ...);`，如：
+```
+mysql> insert into students values(NULL, "王刚", "男", 20, "13811371377");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into students (name, sex, age) values("孙丽华", "女", 21);
+Query OK, 1 row affected (0.00 sec)
+```
+
+查询表中的数据：`select 列名称 from 表名称 [查询条件];`
+```
+mysql> select name, age from students;
++-----------+-----+
+| name      | age |
++-----------+-----+
+| 王刚      |  20 |
+| 孙丽华    |  21 |
++-----------+-----+
+2 rows in set (0.00 sec)
+
+mysql> select * from students where age > 21;
+Empty set (0.00 sec)
+
+mysql> select * from students where name like "%王%";
++----+--------+-----+-----+-------------+
+| id | name   | sex | age | tel         |
++----+--------+-----+-----+-------------+
+|  1 | 王刚   | 男  |  20 | 13811371377 |
++----+--------+-----+-----+-------------+
+1 row in set (0.00 sec)
+
+mysql> select * from students where id<5 and age>20;
++----+-----------+-----+-----+------+
+| id | name      | sex | age | tel  |
++----+-----------+-----+-----+------+
+|  2 | 孙丽华    | 女  |  21 | -    |
++----+-----------+-----+-----+------+
+1 row in set (0.00 sec)
+```
+
+更改表中的数据：`update 表名称 set 列名称=新值 where 更改条件;`，如：
+```sql
+update students set tel=default where id=5;
+update students set age=age+1;
+update students set name="张伟鹏", age=19 where tel="13288957398";
+```
+
+删除表中的数据：`delete from 表名称 where 删除条件;`，如：
+```sql
+delete from students where id=2;
+delete from students where age<20;
+delete from students; # 删除表中所有数据
+```
+
+创建后表的修改，添加列：`alter table 表名 add 列名 列数据类型 [after 插入位置];`，如：
+```sql
+alter table students add address char(60);          # 在表的最后追加列
+alter table students add birthday date after age;   # 在名为age的列后插入列birthday
+```
+
+修改列：`alter table 表名 change 列名称 列新名称 新数据类型;`
+```sql
+alter table students change tel telephone char(13) default "-"; # 将表tel列改名为telephone
+alter table students change name name char(16) not null;        # 将name列的数据类型改为char(16)
+```
+
+删除列：`alter table 表名 drop 列名称;`
+```sql
+alter table students drop birthday; # 删除birthday列
+```
+
+重命名表：`alter table 表名 rename 新表名字;`
+```sql
+alter table students rename workmates; # 重命名studetns表为workmates
+```
+
+删除整张表：`drop table 表名;`
+
+删除整个数据库：`drop database 数据库名;`
+
+修改root用户密码：`mysqladmin -u root -p password 新密码`
+
+可视化管理工具：MySQL Workbench
