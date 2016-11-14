@@ -52,4 +52,22 @@ SNMP服务器端本身便是一个出色的监控处理程序。通过SNMP来获
 
 type -a python
 
-sysctl: get or set kernel state. `sysctl -a | grep pid_max`
+sysctl: get or set kernel state. `sysctl -a | grep pid_max` [link](http://blog.chinaunix.net/uid-20662820-id-5690021.html)
+
++ `/proc/sys/kernel/pid_max` #操作系统进程数限制（or线程数限制？）
++ `/proc/sys/kernel/thread-max` #操作系统线程数
++ `max_user_process (ulimit -u)` #系统限制某用户下最多可以运行多少进程或线程
++ `/proc/sys/vm/max_map_count` #单进程mmap的限制会影响单个进程可创建的线程数
++ `/sys/fs/cgroup/memory/${cgroup}/memory.kmem` #单个docker内核内存的限制，可以影响task_struct等slab节点的申请，间接影响可创建的线程数
+
+ping: ping命令作为检测网络连通性最常用的工具，其适用的传输协议既不是TCP，也不是UDP，而是ICMP。[link](http://segmentfault.com/a/1190000007350218)
+
+netstat：查看Socket信息的老牌命令，常用的选择有：
+
++ -t 只显示TCP连接
++ -u 只显示UDP连接
++ -n 不用解析hostname，用IP显示主机，可以加快执行速度
++ -p 查看连接的进程信息
++ -l 只显示监听的连接
+
+ss是新兴的命令，其选项和netstat差不多，主要区别是能够进行过滤（通过state与exclude关键字）。
