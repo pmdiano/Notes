@@ -51,3 +51,5 @@ SNMP服务器端本身便是一个出色的监控处理程序。通过SNMP来获
 查看网络流量：`ifstat -bi eth2`
 
 type -a python
+
+sysctl: get or set kernel state. `sysctl -a | grep pid_max`
