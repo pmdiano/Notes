@@ -173,3 +173,26 @@ ls命令加上`-i`选项显示文件索引节点的信息，可以用来判断�
 `head`打印文件的前十行，`tail`打印文件的后十行。`-n`选项可以调整命令打印的行数。`tail`有一个选项允许你实时的浏览文件：`tail -f /var/log/messages`。
 
 `tee`：`ls /usr/bin | tee ls.txt | grep zip`
+
+`echo [[:upper:]]*`
+
+`echo $((2+2))`：算数表达式展开，`$((expression))`
+
+花括号展开：
+```bash
+[qma@qxbox ~ ]$ echo Front-{A,B,C}-Back
+Front-A-Back Front-B-Back Front-C-Back
+[qma@qxbox ~ ]$ echo Number_{1..5}
+Number_1 Number_2 Number_3 Number_4 Number_5
+[qma@qxbox ~ ]$ echo {Z..A}
+Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
+[qma@qxbox ~ ]$ echo a{A{1,2},B{3,4}}b
+aA1b aA2b aB3b aB4b
+```
+
+`echo $USER`, `printenv | less`
+
+命令替换：把一个命令的输出作为另一个展开模式来使用。
+```bash
+[qma@qxbox ~ ]$ ls -l $(which cp)
+-rwxr-xr-x  1 root  wheel  28832 Jan 13  2016 /bin/cp```
