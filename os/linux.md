@@ -195,4 +195,5 @@ aA1b aA2b aB3b aB4b
 命令替换：把一个命令的输出作为另一个展开模式来使用。
 ```bash
 [qma@qxbox ~ ]$ ls -l $(which cp)
--rwxr-xr-x  1 root  wheel  28832 Jan 13  2016 /bin/cp```
+-rwxr-xr-x  1 root  wheel  28832 Jan 13  2016 /bin/cp
+```
