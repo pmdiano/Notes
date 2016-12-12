@@ -226,3 +226,45 @@ sleep 10; echo "Time's up" $'\a'
 - `passwd`：更改用户密码
 
 查看`sudo`命令可以授予哪些权限：`sudo -l`
+
+关于进程的命令：
+
+- `ps`：报告当前进程快照
+- `top`：显示任务
+- `jobs`：列出活跃的任务
+- `bg`：把一个任务放到后台执行
+- `fg`：把一个任务放到前台执行
+- `kill`：给一个进程发送信号
+- `killall`：杀死指定名字的进程
+- `shutdown`：关机或重启系统
+
+当系统启动的时候，内核先把一些它自己的程序初始化为进程，然后运行一个叫做`init`的进程。`init`，依次再运行一系列称为`init`脚本的shell脚本（位于`/etc`），它们可以启动所有的系统服务。`init`进程的PID总是1。
+
+`ps x`：展示所有进程。`ps aux`会显示更多信息。
+
+`ps`只能提供命令执行时刻的机器状态快照。为了看到更多动态的信息，我们可用`top`命令。
+
+启动一个程序，让它立刻在后台运行，我们在程序命令之后加上`&`字符：`xlogo &`。`fg`移动到前台，`Ctrl-z`可以停止一个前台进程，`bg`命令把程序移到后台。
+```bash
+qirong@qirong-VirtualBox:~$ xlogo &
+[1] 3432
+qirong@qirong-VirtualBox:~$ jobs
+[1]+  Running                 xlogo &
+qirong@qirong-VirtualBox:~$ fg %1
+xlogo
+^Z
+[1]+  Stopped                 xlogo
+qirong@qirong-VirtualBox:~$ bg %1
+[1]+ xlogo &
+qirong@qirong-VirtualBox:~$ kill 3432
+qirong@qirong-VirtualBox:~$
+```
+
+注意`kill`命令只是给程序发送信号。`Ctrl-c`发送一个INT（中断）信号，`Ctrl-z`发送一个TSTP（终端停止）的信号。完整的信号列表：`kill -l`。`killall`给多个进程发送信号：`killall [-u user] [-signal] name...`
+
+其他与进程监测相关的命令：
+
+- `pstree`：输出一个树形结构的进程列表
+- `vmstat`：输出一个系统资源使用快照，包括内存、交换分区和磁盘I/O
+- `xload`：一个图形界面程序，可以画出系统负载的图形
+- `tload`：与`xload`程序相似，但是在终端中画出图形
