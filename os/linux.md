@@ -209,3 +209,20 @@ aA1b aA2b aB3b aB4b
 sleep 10; echo -e "Time's up\a"
 sleep 10; echo "Time's up" $'\a'
 ```
+
+历史命令展开：`!88`
+
+`Ctr-r`：递增反向搜索历史命令
+
+一些与用户和权限有关的命令：
+
+- `id`：显示用户身份号
+- `chmod`：更改文件模式
+- `umask`：设置默认的文件权限
+- `su`：以另一个用户的身份来运行shell
+- `sudo`：以另一个用户的身份来执行命令
+- `chown`：更改文件所有者
+- `chgrp`：更改文件组所有权
+- `passwd`：更改用户密码
+
+查看`sudo`命令可以授予哪些权限：`sudo -l`
