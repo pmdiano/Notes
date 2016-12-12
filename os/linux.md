@@ -196,4 +196,16 @@ aA1b aA2b aB3b aB4b
 ```bash
 [qma@qxbox ~ ]$ ls -l $(which cp)
 -rwxr-xr-x  1 root  wheel  28832 Jan 13  2016 /bin/cp
+[qma@qxbox notes (master)]$ ls -l `which cp`
+-rwxr-xr-x  1 root  wheel  28832 Jan 13  2016 /bin/cp
+[qma@qxbox notes (master)]$ file `which cp`
+/bin/cp: Mach-O 64-bit executable x86_64
+```
+
+双引号中，参数展开，算数表达式展开，和命令替换仍然有效。如果需要禁止所有的展开，我们使用单引号。若我们只想应用单个字符，可以在字符前面加上一个反斜杠，在这个上下文中叫做转义字符。在单引号中，反斜杠失去它的特殊含义，被看作普通字符。
+
+`echo`命令加上`-e`选项，能够解释转义序列。你可以把转义序列放在`$''`里面：
+```bash
+sleep 10; echo -e "Time's up\a"
+sleep 10; echo "Time's up" $'\a'
 ```
