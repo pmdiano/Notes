@@ -268,3 +268,12 @@ qirong@qirong-VirtualBox:~$
 - `vmstat`：输出一个系统资源使用快照，包括内存、交换分区和磁盘I/O
 - `xload`：一个图形界面程序，可以画出系统负载的图形
 - `tload`：与`xload`程序相似，但是在终端中画出图形
+
+关于shell环境的一些命令：
+
+- `printenv`：打印部分或者所有的环境变量
+- `set`：设置shell选项
+- `export`：导出环境变量，让随后执行的程序知道
+- `alias`：创建命令别名
+
+shell在环境中存储了两种不同的数据：环境变量和shell变量。`set`命令可以显示shell和环境变量两者，而`printenv`只是显示环境变量。如果shell环境中的一个成员即不可用`set`命令也不可用`printenv`命令显示，则这个变量是别名，可以用`alias`命令来查看它们。
