@@ -277,3 +277,10 @@ qirong@qirong-VirtualBox:~$
 - `alias`：创建命令别名
 
 shell在环境中存储了两种不同的数据：环境变量和shell变量。`set`命令可以显示shell和环境变量两者，而`printenv`只是显示环境变量。如果shell环境中的一个成员即不可用`set`命令也不可用`printenv`命令显示，则这个变量是别名，可以用`alias`命令来查看它们。
+
+包管理工具：
+
+| 发行版 | 底层工具 | 上层工具 |  
+| ---- | ----------------- | -------------------|  
+| Debian-Style | dpkg | apt-get, aptitude |  
+| Fedora, Red Hat, CentOS | rpm | yum |  
