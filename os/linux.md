@@ -284,3 +284,26 @@ shell在环境中存储了两种不同的数据：环境变量和shell变量。`
 | ---- | ----------------- | -------------------|  
 | Debian-Style | dpkg | apt-get, aptitude |  
 | Fedora, Red Hat, CentOS | rpm | yum |  
+
+关于存储媒介的命令：
+
+- `mount`：挂载一个文件系统
+- `unmount`：卸载一个文件系统
+- `fsck`：检查和修复一个文件系统：`sudo fsck /dev/sdb1`
+- `fdisk`：分区表控制器
+- `mkfs`：创建文件系统：`sudo mkfs -t ext3 /dev/sdb1`; `sudo mkfs -t vfat /dev/sdb1`
+- `fdformat`：格式化一张软盘
+- `dd`：把面向块的数据直接写入设备，也可创建CD或DVD映像文件，但不能用于音频CD（用`cdrdao`命令）
+- `df`：report file system disk space usage
+- `genisoimage (mkisofs)`：创建一个ISO 9660 的映像文件：`genisoimage -o cd-rom.iso -R -J ~/cd-rom-files
+- `md5sum`：计算MD5检验码
+
+有一个叫做`/etc/fstab`的文件可以列出系统启动时要挂载的设备。
+
+挂载ISO：
+```bash
+mkdir /mnt/iso_image
+mount -t iso9660 -o loop image.iso /mnt/iso_image
+```
+
+`wodim`命令可以清空CD-ROM：`wodim dev=/dev/cdrw blank=fast`；写入一个映像文件：`wodim dev=/dev/cdrw image.iso`
