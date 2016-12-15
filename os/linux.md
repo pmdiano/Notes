@@ -307,3 +307,49 @@ mount -t iso9660 -o loop image.iso /mnt/iso_image
 ```
 
 `wodim`命令可以清空CD-ROM：`wodim dev=/dev/cdrw blank=fast`；写入一个映像文件：`wodim dev=/dev/cdrw image.iso`
+
+关于网络系统的一些命令：
+
+- `ping`：发动ICMP ECHO\_REQUEST软件包到网络主机
+- `traceroute`：打印到一台网络主机路由数据包
+- `netstat`：打印网络连接，路由表，接口统计数据，伪装连接，和多路广播成员
+- `ftp`：因特网文件传输程序
+- `wget`：非交互式网络下载器
+- `ssh`：OpenSSH SSH客户端
+
+查找文件的命令：
+
+- `locate`：通过名字来查找文件，`updatedb`命令来更新数据库
+- `find`：在目录层次结构中搜索文件
+- `xargs`：从标准输入生成和执行命令行
+- `stat`：显示文件或文件系统状态
+
+`locate`程序只能依据文件名来查找文件，而`find`程序能基于各种各样的属性，搜索一个给定目录（以及它的子目录），来查找文件。`find ~`将输出主目录下的所有文件（包括目录）。只搜索目录：`find ~ -type d | wc -l`。只搜索普通文件：`find ~ -type f | wc -l`。`b`为块设备文件，`c`为字符设备文件，`l`为符号链接。所有文件名匹配通配符模式`"*.jpg"`和文件大小大于1M的文件：`find ~ -type f -name "\*.jpg" -size +1M | wc -l`。`find`也可以使用逻辑操作符来创建更复杂的逻辑关系：`find ~ \(-type f -not -perm 0600 \) -or \( -type d -not -perm 0700 \)`。
+
+`find`预定义的操作：
+
+- `-delete`
+- `-ls`
+- `-print`
+- `-quit`
+
+如：`find ~ -type f -name '*.BAK' -delete`，`find ~ -type f -and -name '*.BAK' -and -print`。除了预定义的行为，也可以使用随意的命令：`-exec command {};`。如：`find . -exec ls -l '{}' ';'`，`find . -ok ls -l '{}' ';'`。当`-exec`行为被使用的时候，若每次找到一个匹配的文件，它会启动一个新的指定命令的实例。我们可能想要把所有的搜索结果结合起来，再运行一个命令的实例。有两种方法可以这样做，传统方法是使用外部命令`xargs`，第二种方法是使用`find`命令自己的一个新功能。通过把末尾的分号改为加号，就激活了`find`命令的一个功能，把搜索结果结合为一个参数列表，然后执行一次所期望的命令，如：` find . -type f -exec ls -l '{}' +`。`xargs`命令从标准输入接受输入，并把输入转换为一个特定命令的参数列表，如：`find . -type f | xargs ls -l`。对于可能存在的包含空格的文件名，可以这样：`find . -type f -print0 | xargs --null ls -l`。
+
+一些命令：
+```bash
+mkdir -p playground/dir-{00{1..9},0{10..99},100}
+touch playground/dir-{00{1..9},0{10..99},100}/file-{A..Z}
+touch playgournd/timestamp
+find playgound -type f -name 'file-B' -exec touch '{}' ';'
+find playground -type f -newer playground/timestamp
+find playground \( -type f -not -perm 0600 \) -or \( -type d -not -perm 0700 \)
+find playground \( -type f -not -perm 0600 -exec chmod 0600 '{}' ';' \) -or \( -type d -not -perm 0711 -exec chmod 0700 '{}' ';' \)
+```
+
+`find`命令的其他一些选项：
+
+- `-depth`：先处理目录中的文件，再处理目录本身。当指定`-delete`行为时，会自动应用这个选项。
+- `-maxdepth levels`：当执行测试条件和行为的时候，设置find程序陷入目录树的最大级别数
+- `-mindepth levels`：设置find程序陷入目录树的最小级别数
+- `-mount`：不要搜索挂载到其他文件系统上的目录
+- `-noleaf`：不要基于搜索类似于Unix的文件系统做出的假设，来优化它的搜索。
