@@ -1,3 +1,5 @@
+## 服务器
+
 查看/proc/loadavg，可以了解到运行队列的情况： `cat /proc/loadavg`。也可用top，w等工具，从实现方法上看，这些工具获得的系统负载都是来源于/proc/loadavg。
 
 Nmon工具可以监视服务器每秒上下文切换次数。
@@ -50,8 +52,6 @@ SNMP服务器端本身便是一个出色的监控处理程序。通过SNMP来获
 
 查看网络流量：`ifstat -bi eth2`
 
-type -a python
-
 sysctl: get or set kernel state. `sysctl -a | grep pid_max` [link](http://blog.chinaunix.net/uid-20662820-id-5690021.html)
 
 + `/proc/sys/kernel/pid_max` #操作系统进程数限制（or线程数限制？）
@@ -72,29 +72,7 @@ netstat：查看Socket信息的老牌命令，常用的选择有：
 
 ss是新兴的命令，其选项和netstat差不多，主要区别是能够进行过滤（通过state与exclude关键字）。
 
-df: 查看磁盘剩余空间的数量
-
-free: 显示空闲内存的数量
-
-ls的选项：-F (classify), -t (按照修改时间排序)，-d (directory，列出目录的详细信息而不是目录中的内容)，-S（按照文件大小排序）
-
-file：打印文件类型
-
-less：打印文件内容：
-
-+ e：向前移动一行
-+ y：向后移动一行
-+ d：向前移动半页
-+ u：向后移动半页
-+ f：向前移动一页
-+ b：向后移动一页
-+ G：移动到最后一行
-+ g：移动到第一行
-+ /characters：向前查找指定的字符串
-+ n：向前查找下一个出现的字符串，这个字符串是之前所指定查找的
-
-Linux系统中的目录：
-
+## Linux系统中的目录
 + `/bin`：包含系统启动和运行所必须的二进制程序
 + `/boot`：包含Linux内核，最初的RMA磁盘映像，和启动加载程序
     - `/boot/grub/grub/conf` or `menu.lst`：用来配置启动加载程序
@@ -135,11 +113,24 @@ Linux系统中的目录：
     - `[:lower:]`：匹配任意一个小写字母
     - `[:upper:]`：匹配任意一个大写字母
 
-cp：`cp item1 item2`，或者 `cp item... directory` （三个圆点在一个参数后面，表示那个参数可以重复）
-
-ln：创建硬链接，`ln file link`。创建符号链接：`ln -s item link`
-
-ls命令加上`-i`选项显示文件索引节点的信息，可以用来判断几个文件是否是同一文件的硬链接。`ls -l`显示的那个数字是该文件的硬链接数目。硬链接有两个缺点：不能跨越物理设备；不能关联目录，只能是文件。符号链接是文件的特殊类型，它包含一个指向目标文件或目录的文本指针。
+## 一般命令
+- `ls`命令加上`-i`选项显示文件索引节点的信息，可以用来判断几个文件是否是同一文件的硬链接。`ls -l`显示的那个数字是该文件的硬链接数目。硬链接有两个缺点：不能跨越物理设备；不能关联目录，只能是文件。符号链接是文件的特殊类型，它包含一个指向目标文件或目录的文本指针。ls的选项：-F (classify), -t (按照修改时间排序)，-d (directory，列出目录的详细信息而不是目录中的内容)，-S（按照文件大小排序）
+- `df`: 查看磁盘剩余空间的数量
+- `free`: 显示空闲内存的数量
+- `file`：打印文件类型
+- `cp`：`cp item1 item2`，或者 `cp item... directory` （三个圆点在一个参数后面，表示那个参数可以重复）
+- `ln`：创建硬链接，`ln file link`。创建符号链接：`ln -s item link`
+- `less`：打印文件内容：
+    + `e`：向前移动一行
+    + `y`：向后移动一行
+    + `d`：向前移动半页
+    + `u`：向后移动半页
+    + `f`：向前移动一页
+    + `b`：向后移动一页
+    + `G`：移动到最后一行
+    + `g`：移动到第一行
+    + `/characters`：向前查找指定的字符串
+    + `n`：向前查找下一个出现的字符串，这个字符串是之前所指定查找的
 
 命令可以是以下四种形式之一：
 
@@ -148,7 +139,7 @@ ls命令加上`-i`选项显示文件索引节点的信息，可以用来判断�
 - shell函数，小规模的shell脚本，混合到环境变量中
 - 命令别名
 
-`type <command>`可以用来显示命令的类别。
+`type <command>`可以用来显示命令的类别。`type -a python`
 
 `which`可以确定所给定的可执行程序的准确位置，不包括内部命令和命令别名。
 
@@ -162,6 +153,7 @@ ls命令加上`-i`选项显示文件索引节点的信息，可以用来判断�
 - `head`：输出文件第一部分
 - `tail`：输出文件最后一部分
 
+## 重定向
 重定向标准错误到一个文件：`ls -l /bin/usr 2> ls-error.txt`。文件描述符0，1，2分别为标准输入，标准输出，标准错误。
 
 重定向标准输出和错误到同一个文件：`ls -l /bin/usr > ls-output.txt 2>&1`，或者`ls -l /bin/usr &> ls-output.txt`。
@@ -178,7 +170,7 @@ ls命令加上`-i`选项显示文件索引节点的信息，可以用来判断�
 
 `echo $((2+2))`：算数表达式展开，`$((expression))`
 
-花括号展开：
+## 花括号展开
 ```bash
 [qma@qxbox ~ ]$ echo Front-{A,B,C}-Back
 Front-A-Back Front-B-Back Front-C-Back
@@ -214,8 +206,7 @@ sleep 10; echo "Time's up" $'\a'
 
 `Ctr-r`：递增反向搜索历史命令
 
-一些与用户和权限有关的命令：
-
+## 用户和权限
 - `id`：显示用户身份号
 - `chmod`：更改文件模式
 - `umask`：设置默认的文件权限
@@ -227,8 +218,7 @@ sleep 10; echo "Time's up" $'\a'
 
 查看`sudo`命令可以授予哪些权限：`sudo -l`
 
-关于进程的命令：
-
+## 进程
 - `ps`：报告当前进程快照
 - `top`：显示任务
 - `jobs`：列出活跃的任务
@@ -285,8 +275,7 @@ shell在环境中存储了两种不同的数据：环境变量和shell变量。`
 | Debian-Style | dpkg | apt-get, aptitude |  
 | Fedora, Red Hat, CentOS | rpm | yum |  
 
-关于存储媒介的命令：
-
+## 存储媒介
 - `mount`：挂载一个文件系统
 - `unmount`：卸载一个文件系统
 - `fsck`：检查和修复一个文件系统：`sudo fsck /dev/sdb1`
@@ -308,8 +297,7 @@ mount -t iso9660 -o loop image.iso /mnt/iso_image
 
 `wodim`命令可以清空CD-ROM：`wodim dev=/dev/cdrw blank=fast`；写入一个映像文件：`wodim dev=/dev/cdrw image.iso`
 
-关于网络系统的一些命令：
-
+## 关于网络系统的一些命令
 - `ping`：发动ICMP ECHO\_REQUEST软件包到网络主机
 - `traceroute`：打印到一台网络主机路由数据包
 - `netstat`：打印网络连接，路由表，接口统计数据，伪装连接，和多路广播成员
@@ -317,8 +305,7 @@ mount -t iso9660 -o loop image.iso /mnt/iso_image
 - `wget`：非交互式网络下载器
 - `ssh`：OpenSSH SSH客户端
 
-查找文件的命令：
-
+## 查找文件
 - `locate`：通过名字来查找文件，`updatedb`命令来更新数据库
 - `find`：在目录层次结构中搜索文件
 - `xargs`：从标准输入生成和执行命令行
@@ -353,3 +340,10 @@ find playground \( -type f -not -perm 0600 -exec chmod 0600 '{}' ';' \) -or \( -
 - `-mindepth levels`：设置find程序陷入目录树的最小级别数
 - `-mount`：不要搜索挂载到其他文件系统上的目录
 - `-noleaf`：不要基于搜索类似于Unix的文件系统做出的假设，来优化它的搜索。
+
+## 压缩，归档和同步程序
+- `gzip`
+- `bzip2`
+- `tar`
+- `zip`
+- `rsync`
