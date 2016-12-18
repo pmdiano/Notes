@@ -342,8 +342,37 @@ find playground \( -type f -not -perm 0600 -exec chmod 0600 '{}' ';' \) -or \( -
 - `-noleaf`：不要基于搜索类似于Unix的文件系统做出的假设，来优化它的搜索。
 
 ## 压缩，归档和同步程序
-- `gzip`
-- `bzip2`
-- `tar`
-- `zip`
-- `rsync`
+- `gzip`：压缩文件，使用了Lempel-Ziv算法（L777)。对应的解压缩命令为`gunzip`。
+- `bzip2`：块排序文件压缩器，使用了Burrows-Wheeler块排序算法以及Huffman编码
+- `tar`：归档（tape archive）
+- `zip`：打包和压缩文件
+- `rsync`：同步远端文件和目录，类似于`rcp`(remote file copy)
+
+```bash
+gzip foo.txt                # 将foot.txt压缩为foo.txt.gz，foo.txt消失
+gzip -tv foo.txt.gz         # -t:测试压缩文件的完整性 -v:显示压缩过程中的信息
+gunzip foo.txt              # 假定了扩展名为gz，没必要指定
+gunzip -c foo.txt | less    # 只浏览压缩文本文件的内容
+```
+`zcat`等同于`gunzip -c`，`zless`等同于带`less`管道的`zcat`。
+
+`tar`的模式：
+
+- `c`：为文件和/或目录列表创建归档文件
+- `x`：抽取归档文件
+- `r`：追加具体的路径到归档文件的末尾
+- `t`：列出归档文件的内容
+
+```bash
+tar cf playground.tar playground    # 创建playround目录的tar包
+tar tf playground.tar               # 列出tar包的内容
+tar tvf playground.tar              # 列出tar包的详细内容
+
+mkdir foo
+cd foo
+tar xf ../playground.tar            # 解压缩tar包
+```
+`tar xf`也可以通过给命令添加末尾的路径名就只会恢复指定的文件，通过`--wildcards`选项可以支持通配符。`tar`经常和`find`命令合用：
+```bash
+find playground -name 'file-A' -exec tar rf playground.tar '{}' '+'
+```
