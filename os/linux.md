@@ -376,3 +376,34 @@ tar xf ../playground.tar            # 解压缩tar包
 ```bash
 find playground -name 'file-A' -exec tar rf playground.tar '{}' '+'
 ```
+`tar`也可以直接压缩：
+```bash
+find playground -name 'file-A' | tar czf playground.tgz -T -    # '-' 表示标准输入输出
+find playground -name 'file-A' | tar cjf playground.tbz -T -
+```
+与`ssh`合用：
+```bash
+mkdir remote-stuff
+cd remote-stuff
+ssh remote-sys 'tar cf - Documents' | tar xf -
+```
+
+`zip`最基本的使用：`zip options zipfile file...`。如：`zip -r playground.zip playground`。使用`unzip`来抽取一个zip文件的内容：`cd foo; unzip ../playground.zip`。`unzip -l file`则只列出文件包中的内容而没有抽取文件。`zip`的管道：
+```bash
+find playground -name "file-A" | zip -@ file-A.zip
+ls -l /etc/ | zip ls-etc.zip -
+unzip -p ls-etc.zip | less
+```
+`rsync`的使用：
+```bash
+rsync -av playground foo    # 同步playground到foo
+sudo rsync -av --delete /etc /home /usr/local /media/BigDisk/backup
+                            # --delete选项删除可能在备份设备中已经存在但却不再
+                            # 存在于源设备中的文件
+sudo rsync -av --delete --rsh=ssh /etc /usr/local remote-sys:/backup
+```
+`rsync`用来在网络间同步文件的第二种方式是通过使用`rsync`服务器。`rsync`可以被配置为一个守护进程，监听即将到来的同步请求。
+```bash
+mkdir fedora-devel
+rsync -av --delete rsync://rsync.gtlib.gatech.edu/fedora-linux-core/development/i386/os fedora-devel
+```
