@@ -407,3 +407,30 @@ sudo rsync -av --delete --rsh=ssh /etc /usr/local remote-sys:/backup
 mkdir fedora-devel
 rsync -av --delete rsync://rsync.gtlib.gatech.edu/fedora-linux-core/development/i386/os fedora-devel
 ```
+
+## 正则表达式
+`grep`即为`global regular expression print`。`grep`的用法：`grep [options] regex [file...]`。常用的`grep`选项列表：
+
+- `-i`：忽略大小写
+- `-v`：不匹配
+- `-c`：打印匹配的数量，而不是文本行本身
+- `-l`：打印包含匹配项的文件名，而不是文本行本身
+- `-L`：类似于`-l`选项，但是只是打印不包含匹配项的文件名
+- `-n`：打印行号
+- `-h`：应用于多文件搜索，不输出文件名
+
+正则表达式元字符：`^ $ . [ ] { } - ? * + ( ) | \`。其它所有字符都被认为是原义字符。
+
+- `.`：匹配任意字符
+- `^`：锚（定位点），匹配文本行的开头
+- `$`：锚（定位点），匹配文本行的末尾
+
+查字典：
+```bash
+± grep -i '^..j.r$' /usr/share/dict/words
+Gujar
+Kajar
+Major
+major
+```
+中括号表达式能够从一个指定的字符集合中匹配一个单个的字符：`grep -h '[bg]zip' dirlist*.txt`。元字符被放置到中括号后会失去了它们的特殊含义，然而在两种情况下会在中括号表达式中使用元字符。第一个是插入字符`^`，用来表示否定，且只有插入字符是中括号表达式中的第一个字符的时候才会唤醒否定功能，否则仍是普通字符；第二个是连字符字符`-`，用来表示一个字符区域，如`grep -h '^[A-Z]' dirlist*.txt`，`grep -h '^[A-Za-z0-9]' dirlist*.txt`。
