@@ -490,3 +490,61 @@ find . -regex '.*[^-\_./0-9a-zA-Z].*'
 # locate程序支持基本的（--regexp）和扩展的（--regex）正则表达式
 locate --regex 'bin/(bz|gz|zip)'
 ```
+
+## 文本处理
+### `sort`
+`sort`的选项：
+
+- `-b`: `--ignore-leading-blankds`
+- `-f`: `--ignore-case`
+- `-n`: `--numeric-sort`
+- `-r`: `--reverse`
+- `-k`: `--key=field1,[field2]`
+- `-m`: `--merge`
+- `-o`: `--output=file`
+- `-t`: `--field-separate=char`，默认情况下，域由空格或制表符分隔。
+
+```bash
+du -s /usr/share/* | head
+du -s /usr/share/* | sort -nr | head
+
+ls -l /usr/bin | head
+ls -l /usr/bin | sort -nr -k 5 | head
+
+sort -k 1,1 -k 2n distros.txt
+sort -k 3.7nbr -k 3.1nbr -k 3.4nbr distros.txt #偏移量，根据日期排序，11/25/2008
+
+sort -t ':' -k 7 /etc/passwd | head
+```
+
+### `uniq`
+`uniq`的选项：
+
+- `-c`：每行开头显示重复的次数
+- `-d`：只输出重复行
+- `-f n`：忽略每行开头的n个字段，字段之间由空格分隔
+- `-i`：在比较文本行的时候忽略大小写
+- `-s n`：跳过（忽略）每行开头的n个字符
+- `-u`：只是输出独有的文本行，这是默认的
+
+### `cut`
+从文本行中抽取文本，选项：
+
+- `-c char_list`
+- `-f field_list`
+- `-d delim_char`，默认情况下有单个tab字符分隔开
+- `--complement`
+
+```bash
+cut -f 3 distro.txt | cut -c 7-10
+```
+`expand`命令可以将tab展开为空格，`unexpand`可以用tab代替空格。
+
+### `diff`，`patch`
+`diff`有上下文模式（`-c`），统一模式（`-u`）。
+```bash
+diff -Naur old_file new_file > diff_file
+patch < diff_file
+```
+
+### `tr`：translate character
