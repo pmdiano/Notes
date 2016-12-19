@@ -487,4 +487,6 @@ grep -Ev '^\([0-9]{3}\) \d{3}-\d{4}'
 # 查找丑陋的路径名，其包含的任意字符都不是以下字符集中的一员（？）
 find . -regex '.*[^-\_./0-9a-zA-Z].*'
 
+# locate程序支持基本的（--regexp）和扩展的（--regex）正则表达式
+locate --regex 'bin/(bz|gz|zip)'
 ```
