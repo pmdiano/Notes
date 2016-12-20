@@ -548,3 +548,62 @@ patch < diff_file
 ```
 
 ### `tr`：translate character
+```bash
+echo "lowercase letters" | tr a-z A-Z
+echo "lowercase letters" | tr [:lower:] A
+tr -d '\r' <dos_file> <unix_file>
+echo "secret text" | tr a-zA-Z n-za-mN-ZA-M     # ROT13文本编码
+echo "aaabbbccc" | tr -s ab                     # abccc
+echo "abcabcabc" | tr -s ab                     # abcabcabc
+```
+
+### `sed`：stream editor
+```bash
+echo "front" | sed '1s/front/back/' # s是替换的意思
+sed -n '1,5p' distros.txt           # p是打印，-n选项是不自动打印选项
+sed -n '/SUSE/p' distros.txt        # 正则表达式，打印所有包含SUSE的行
+sed -n '/SUSE/!p' distros.txt       # 打印所有不包含SUSE的行
+sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)$/\3-\1-\2/' distros.txt
+sed -f distros.sed distros.txt
+echo "aaabbbccc" | sed 's/b/B/'     # aaaBbbccc
+echo "aaabbbccc" | sed 's/b/B/g'    # aaaBBBccc
+```
+`sed`地址：
+
+| 地址          | 说明              |
+| ------------- | ----------------- |
+| `n`           | 行号，n是一个正整数 |
+| `$`           | 最后一行 |
+| `/regexp/`    | 所有匹配一个POSIX基本正则表达式的文本行 |
+| `addr1,addr2` | 从addr1到addr2范围内的文本行，地址可能是上述任意单独的地址形式 |
+| `first~step`  | 初始+步长 |
+| `addr1,+n`    | 匹配地址addr1和随后的n个文本行 |
+| `addr!`       | 匹配所有的文本行，除了addr之外 |
+
+`sed`命令：
+
+| 地址          | 说明              |
+| ------------- | ----------------- |
+| `=`           | 输出当前的行号 |
+| `a`           | 在当前行之后追加文本 |
+| `d`           | 删除当前行 |
+| `i`           | 在当前行之前插入文本 |
+| `p`           | 打印当前行 |
+| `q`           | 退出sed。如果不指定`-n`选项，输出当前行 |
+| `Q`           | 退出sed |
+| `s/regexp/replacement/` | 替换 |
+| `y/set1/set2` | 执行字符转写操作，要求两个字符集合具有相同的长度 |
+
+### `aspell`：一款交互式的拼写检查器
+`aspell check textfile`
+
+### 别的命令
+`split`：把文件分割成碎片；`csplit`：基于上下文把文件分隔成碎片；`sdiff`：并排合并文件差异
+
+## 格式化输出
+- `nl`：添加行号
+- `fold`：限制文件列宽
+- `fmt`：一个简单的文本格式转换器
+- `pr`：让文本为打印做好准备
+- `printf`：格式化数据并打印出来
+- `groff`：一个文件格式系统
