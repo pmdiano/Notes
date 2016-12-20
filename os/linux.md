@@ -605,5 +605,52 @@ echo "aaabbbccc" | sed 's/b/B/g'    # aaaBBBccc
 - `fold`：限制文件列宽
 - `fmt`：一个简单的文本格式转换器
 - `pr`：让文本为打印做好准备
+- `lpr`, `lp`：打印
+- `lpstat`：显示打印系统状态
+- `lpq`：显示打印机队列状态
+- `lprm`和`cancel`：取消打印任务（打印的程序都在CUPS包）
 - `printf`：格式化数据并打印出来
 - `groff`：一个文件格式系统
+
+### `nl`
+TL,DR: sed脚本
+
+### `a2ps`
+```bash
+ls /usr/bin | pr -3 -t | a2ps -o ~/Desktop/ls.ps -L 66
+```
+
+## Shell脚本
+脚本的第一行：`#!/bin/bash`，`#!`字符序列叫做shebang，告诉操作系统执行此脚本所用的解释器的名字。给变量赋值：
+```bash
+a=z
+b="a string"
+c="a string and $b"
+d=$(ls -l foo.txt)
+e=$((5 * 7))
+f="\t\ta string \n"
+
+# 花括号展开
+filename="myfile"
+touch $filename
+mv $filename $filename1     # 失败
+mv $filename ${filename}1   # 成功
+
+# here document：
+#!/bin/bash
+# Script to retrieve a file via FTP
+# for <<, should be no space for following lines
+# for <<-, must it be tab?
+FTP_SERVER=ftp.nl.debian.org
+FTP_PATH=/debian/dists/lenny/main/installer-i386/current/images/cdrom
+REMOTE_FILE=debian-cd_info.tar.gz
+ftp -n <<- _EOF_
+    open $FTP_SERVER
+    user anonymous me@linuxbox
+    cd $FTP_PATH
+    hash
+    get $REMOTE_FILE
+    bye
+_EOF_
+ls -l $REMOTE_FILE
+```
