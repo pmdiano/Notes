@@ -654,3 +654,38 @@ ftp -n <<- _EOF_
 _EOF_
 ls -l $REMOTE_FILE
 ```
+
+### Shell函数
+Shell函数有两种语法形式，它们是等价的：
+```bash
+function name {
+    commands
+    return
+}
+
+name () {
+    commands
+    return
+}
+```
+
+### 局部变量
+```bash
+#!/bin/bash
+foo=0 # global variable
+funct_1 () {
+    local foo
+    foo=1
+    echo "funct_1: foo = $foo"
+}
+funct_2 () {
+    local foo
+    foo=2
+    echo "funct_2: foo = $foo"
+}
+echo "global: foo = $foo"
+funct_1
+echo "global: foo = $foo"
+funct_2
+echo "global: foo = $foo"
+```
