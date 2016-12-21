@@ -689,3 +689,129 @@ echo "global: foo = $foo"
 funct_2
 echo "global: foo = $foo"
 ```
+
+### `if`语句和测试条件
+```bash
+x=5
+if [ $x = 5 ]; then
+    echo "x equals 5."
+else
+    echo "x does not equal 5."
+fi
+```
+退出状态：`$?`。
+
+文件表达式：
+
+| 表达式             | 如果为真           |
+| ----------------- | ----------------- |
+| `file1 -ef file2` | file1 和 file2 拥有相同的索引号（通过硬链接两个文件名指向相同的文件）。|
+| `file1 -nt file2` | file1新于 file2。 |
+| `file1 -ot file2` | file1早于 file2。 |
+| `-b file`         | file 存在并且是一个块（设备）文件。|
+| `-c file`         | file 存在并且是一个字符（设备）文件。 |
+| `-d file`         | file 存在并且是一个目录。 |
+| `-e file`         | file 存在。 |
+| `-f file`         | file 存在并且是一个普通文件。|
+| `-g file`         | file 存在并且设置了组 ID。|
+| `-G file`         | file 存在并且由有效组 ID 拥有。|
+| `-k file`         | file 存在并且设置了它的“sticky bit”。|
+| `-L file`         | file 存在并且是一个符号链接。|
+| `-O file`         | file 存在并且由有效用户 ID 拥有。|
+| `-p file`         | file 存在并且是一个命名管道。|
+| `-r file`         | file 存在并且可读（有效用户有可读权限。|
+| `-s file`         | file 存在且其长度大于零。|
+| `-S file`         | file 存在且是一个网络 socket。|
+| `-t fd`           | fd是一个定向到终端／从终端定向的文件描述符。这可以被用来决定是否重定向了标准输入／输出错误。|
+| `-u file`         | file 存在并且设置了 setuid 位。|
+| `-w file`         | file 存在并且可写（有效用户拥有可写权限）。|
+| `-x file`         | file 存在并且可执行（有效用户有执行／搜索权限）。|
+
+字符串表达式：
+
+| 表达式             | 如果为真           |
+| ----------------- | ----------------- |
+| `string` | string不为null |
+| `-n string` | 字符串string的长度大于零 |
+| `-z string` | 字符串string的长度等于零 |
+| `string1 = string2` | string1和string2相同 |
+| `string1 == string2` | 同上 |
+| `string1 != string2` | string1和string2不相同 |
+| `string1 '>' string2` | string1排列在string2之后 |
+| `string1 '<' string2` | string1排列在string2之前 |
+
+整型表达式：
+
+| 表达式             | 如果为真           |
+| ----------------- | ----------------- |
+| `integer1 -eq integer2` | equal |
+| `integer1 -ne integer2` | not equal |
+| `integer1 -le integer2` | less than or equal |
+| `integer1 -lt integer2` | less than |
+| `integer1 -ge integer2` | greater than or equal |
+| `integer1 -gt integer2` | greater than |
+
+`[[ expression ]]`相似于test命令，但是增加了一个重要的新的字符串表达式：`string1 =~ regex`。`[[ ]]`添加的另一个功能是`==`操作符支持类型匹配。
+```bash
+#!/bin/bash
+# test-integer2: evaluate the value of an integer.
+INT=-5
+if [[ "$INT" =~ ^-?[0-9]+$ ]]; then
+    if [ $INT -eq 0 ]; then
+        echo "INT is zero."
+    else
+        if [ $INT -lt 0 ]; then
+            echo "INT is negative."
+        else
+            echo "INT is positive."
+        fi
+        if [ $((INT % 2)) -eq 0 ]; then
+            echo "INT is even."
+        else
+            echo "INT is odd."
+        fi
+    fi
+else
+    echo "INT is not an integer." >&2
+    exit 1
+fi
+```
+`(( ))`被用来执行整数算数计算，它能够通过名字识别出变量，而不需要执行展开操作。判断奇偶：
+```bash
+if [ $((INT % 2)) -eq 0 ]; then
+    echo "INT is even."
+else
+    echo "INT is odd."
+fi
+
+if (( ((INT % 2)) == 0)); then
+    echo "INT is even."
+else
+    echo "INT is odd."
+fi
+```
+
+结合表达式：
+
+| 操作符 | 测试 | `[[ ]]`和`(( ))` |
+| ------ | ---- | ------- |
+| AND    | `-a` | `&&` |
+| OR     | `-o` | `||` |
+| NOT    | `!`  | `!`  |
+
+注意在测试表达式中（test，即`[ ]`）操作符都被shell看作是命令参数，对于bash有特殊含义的字符，比如`<`，`>`，`(`和`)`，必须引起来或者是转义：
+```bash
+if [ ! \( $INT -ge $MIN_VAL -a $INT -le $MAX_VAL \) ]; then
+    echo "$INT is outside $MIN_VAL to $MAX_VAL."
+else
+    echo "$INT is in range."
+fi
+```
+
+test更传统（是POSIX的一部分），然而`[[ ]]`特定于bash。`[[ ]]`更有助于编码。
+
+控制操作符：
+```bash
+mkdir temp && cd temp
+[ -d temp ] || mkdir temp
+```
