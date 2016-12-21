@@ -1,3 +1,171 @@
+## 基本的SQL语句
+```sql
+# SELECT
+SELECT prod_id FROM Products;
+SELECT prod_id, prod_name, prod_price FROM Products;
+SELECT * FROM Products;
+SELECT DISTINCT vend_id FROM Products;
+SELECT prod_name FROM Products LIMIT 5 OFFSET 5;
+SELECT prod_name FROM Products LIMIT 5,5;   -- same as above
+
+# ORDER BY
+SELECT prod_name FROM Products ORDER BY prod_name;
+    /* ORDER BY子句应当保证是SELECT语句中最后一条字句 */
+SELECT prod_id, prod_price, prod_name FROM Products ORDER BY prod_price, prod_name;
+SELECT prod_id, prod_price, prod_name FROM Products ORDER BY 2,3;
+SELECT prod_id, prod_price, prod_name FROM Products ORDER BY prod_price DESC;
+SELECT prod_id, prod_price, prod_name FROM Products ORDER BY prod_price DESC, prod_name;
+
+# WHERE子句
+SELECT prod_name, prod_price FROM Products WHERE prod_price = 3.49;
+SELECT prod_name, prod_price FROM Products WHERE prod_price < 10;
+SELECT vend_id, prod_name FROM Products WHERE vend_id <> 'DLL01';
+SELECT prod_name, prod_price FROM Products WHERE prod_price BETWEEN 5 AND 10;
+SELECT prod_name FROM Products WHERE prod_price IS NULL;
+
+# 组合WHERE子句
+SELECT prod_id, prod_price, prod_name
+FROM Products
+WHERE vend_id = 'DLL01' AND prod_price <= 4;
+
+SELECT prod_name, prod_price
+FROM Products
+WHERE vend_id = 'DLL01' OR vend_id = 'BRS01';
+
+SELECT prod_name, prod_price
+FROM Products
+WHERE (vend_id = 'DLL01' OR vend_id = 'BRS01') AND prod_price >= 10;
+
+# IN操作符
+SELECT prod_name, prod_price
+FROM Products
+WHERE vend_id IN ('DLL01', 'BRS01')
+ORDER BY prod_name;
+
+# NOT操作符
+SELECT prod_name
+FROM Products
+WHERE NOT vend_id = 'DLL01'
+ORDER BY prod_name;
+
+# LIKE操作符
+SELECT prod_id, prod_name
+FROM Products
+WHERE prod_name LIKE 'Fish%';   -- %匹配任意字符出现任意多次
+
+SELECT prod_id, prod_name
+FROM Products
+WHERE prod_name LIKE '__ inch teddy bear';  -- _匹配单个字符
+
+# 计算字段
+SELECT CONCAT(RTRIM(vend_name), ' (', RTRIM(vend_country), ')')
+FROM Vendors
+ORDER BY vend_name;
+
+SELECT CONCAT(RTRIM(vend_name), ' (', RTRIM(vend_country), ')')
+    AS vend_title
+FROM Vendors
+ORDER BY vend_name;
+
+SELECT prod_id,
+       quantity,
+       item_price,
+       quantity*item_price AS expanded_price
+FROM OrderItems
+WHERE order_num = 20008;
+
+# 函数
+SELECT vend_name, UPPER(vend_name) AS vend_name_upcase FROM Vendors ORDER BY vend_name;
+
+SELECT cust_name, cust_contact
+FROM Customers
+WHERE SOUNDEX(cust_contact) = SOUNDEX('Michael Green');
+
+SELECT order_num FROM Orders WHERE YEAR(order_date) = 2012;
+
+# 聚集函数
+SELECT COUNT(*) FROM Customers;
+SELECT COUNT(cust_email) AS num_cust FROM Customers;  -- 忽略NULL值
+SELECT AVG(prod_price) AS avg_price FROM Products;
+SELECT AVG(prod_price) AS avg_price FROM Products WHERE vend_id = 'DLL01';
+SELECT MAX(prod_price) AS max_price FROM Products;
+SELECT SUM(quantity) AS items_ordered FROM OrderItems WHERE order_num = 20005;
+SELECT SUM(item_price*quantity) AS total_price FROM OrderItems WHERE order_num = 20005;
+SELECT AVG(DISTINCT prod_price) AS avg_price FROM Products WHERE vend_id = 'DLL01';
+
+SELECT COUNT(*) AS num_items,
+       MIN(prod_price) AS price_min,
+       MAX(prod_price) AS price_max,
+       AVG(prod_price) AS price_avg
+FROM Products;
+
+# 分组数据：GROUP BY语句和HAVING语句
+SELECT vend_id, COUNT(*) AS num_prods FROM Products GROUP BY vend_id;
+SELECT cust_id, COUNT(*) AS orders FROM Orders GROUP BY cust_id HAVING COUNT(*) >= 2;
+
+-- WHERE过滤行，HAVING过滤分组；WHERE在数据分组前过滤，HAVING在数据分组后过滤
+SELECT vend_id, COUNT(*) AS num_prods
+FROM Products
+WHERE prod_price >= 4
+GROUP BY vend_id
+HAVING COUNT(*) >= 2;
+
+SELECT order_num, COUNT(*) AS items
+FROM OrderItems
+GROUP BY order_num
+HAVING COUNT(*) >= 3
+ORDER BY items, order_num;
+
+# 子查询
+SELECT cust_name, cust_contact
+FROM Customers
+WHERE cust_id IN (SELECT cust_id
+                  FROM Orders
+                  WHERE order_num IN (SELECT order_num
+                                      FROM OrderItems
+                                      WHERE prod_id = 'RGAN01'));
+
+SELECT cust_name,
+       cust_state,
+       (SELECT COUNT(*)
+        FROM Orders
+        WHERE Orders.cust_id = Customers.cust_id) AS orders
+FROM Customers
+ORDER BY cust_name;
+
+# 联结表（JOIN）
+SELECT vend_name, prod_name, prod_price
+FROM Vendors, Products
+WHERE Vendors.vend_id = Products.vend_id;
+
+-- 内联结（equijoin），与上相同
+SELECT vend_name, prod_name, prod_price
+FROM Vendors INNER JOIN Products
+ON Vendors.vend_id = Products.vend_id;
+
+-- 联结多个表
+SELECT prod_name, vend_name, prod_price, quantity
+FROM OrderItems, Products, Vendors
+WHERE Products.vend_id = Vendors.vend_id
+AND OrderItems.prod_id = Products.prod_id
+AND order_num = 20007;
+
+-- 与子查询中第一个例子一样
+SELECT cust_name, cust_contact
+FROM Customers, Orders, OrderItems
+WHERE Customers.cust_id = Orders.cust_id
+AND OrderItems.order_num = Orders.order_num
+AND prod_id = 'RGAN01';
+```
+
+## 基本的MySQL
+启动和登录MySQL：
+```
+brew info mysql     # 显示相关信息
+mysql.server start
+mysql -u root -p
+```
+
 通过以下指令来获取当前数据库的实时状态：
 ```
 show status;
