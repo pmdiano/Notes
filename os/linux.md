@@ -815,3 +815,75 @@ test更传统（是POSIX的一部分），然而`[[ ]]`特定于bash。`[[ ]]`�
 mkdir temp && cd temp
 [ -d temp ] || mkdir temp
 ```
+
+## 读取键盘输入
+### `read` - 从标准输入读取数值
+`read [-options] [variable...]`
+如果没有提供变量名，shell变量`REPLY`会包含数据行。
+```bash
+#!/bin/bash
+# read-secrect: input a secret pass phrase
+if read -t 10 -sp "Enter secret pass phrase > " secret_pass; then
+    echo -e "\nSecret pass phrase = '$secret_pass'"
+else
+    echo -e "\nInput timed out" >&2
+    exit 1
+if
+```
+调整IFS（内部字符分隔符）的值来控制输入字段的分离：
+```bash
+#!/bin/bash
+# read-ifs: read fields from a file
+FILE=/etc/passwd
+read -p "Enter a user name > " user_name
+file_info=$(grep "^$user_name:" $FILE)
+if [ -n "$file_info" ]; then
+    IFS=":" read user pw uid gid name home shell <<< "$file_info"
+    echo "User = '$user'"
+    echo "UID = '$uid'"
+    echo "GID = '$gid'"
+    echo "Full Name = '$name'"
+    echo "Home Dir. = '$home'"
+    echo "Shell = '$shell'"
+else
+    echo "No such user '$user_name'" >&2
+    exit 1
+fi
+```
+校验各种输入的示例程序：
+```bash
+#!/bin/bash
+# read-validate: validate input
+invalid_input () {
+    echo "Invalid input '$REPLY'" >$ 2
+    exit 1
+}
+read -p "Enter a single item > "
+# input is empty (invalid)
+[[ -z $REPLY ]] && invalid_input
+# input is multiple items (invalid)
+(( $(echo $REPLY | wc -w) > 1)) && invalid_input
+# is input a valid filename?
+if [[ $REPLY =~ ^[-[:alnum:]\._]+$ ]]; then
+    echo "'$REPLY' is a valid filename."
+    if [[ -e $REPLY ]]; then
+        echo "And file '$REPLY' exists."
+    else
+        echo "However, file '$REPLY' does not exist."
+    fi
+    # is input a floating point number?
+    if [[ $REPLY =~ ^-?[[:digit:]]*\.[[:digit:]]+$ ]]; then
+        echo "'$REPLY' is a floating point number."
+    else
+        echo "'$REPLY' is not a floating point number."
+    fi
+    # is input an integer?
+    if [[ $REPLY =~ ^-?[[:digit:]]+$ ]]; then
+        echo "'$REPLY' is an integer."
+    else
+        echo "'$REPLY' is not an integer."
+    fi
+else
+    echo "The string '$REPLY' is not a valid filename."
+fi
+```
