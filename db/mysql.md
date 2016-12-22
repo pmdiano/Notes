@@ -156,11 +156,93 @@ FROM Customers, Orders, OrderItems
 WHERE Customers.cust_id = Orders.cust_id
 AND OrderItems.order_num = Orders.order_num
 AND prod_id = 'RGAN01';
+
+# 自联结
+-- 使用子查询：
+SELECT cust_id, cust_name, cust_contact
+FROM Customers
+WHERE cust_name = (SELECT cust_name
+                   FROM Customers
+                   WHERE cust_contact = 'Jim Jones');
+
+-- 自联结：
+SELECT c1.cust_id, c1.cust_name, c1.cust_contact
+FROM Customers AS c1, Customers AS c2
+WHERE c1.cust_name = c2.cust_name
+AND c2.cust_contact = 'Jim Jones';
+
+SELECT C.*, O.order_num, O.order_date,
+       OI.prod_id, OI.quantity, OI.item_price
+FROM Customers AS C, Orders AS O, OrderItems AS OI
+WHERE C.cust_id = O.cust_id
+AND OI.order_num = O.order_num
+AND prod_id = 'RGAN01';
+
+# 内联结
+SELECT Customers.cust_id, Orders.order_num
+FROM Customers INNER JOIN Orders
+ON Customers.cust_id = Orders.cust_id;
+
+# 外联结
+SELECT Customers.cust_id, Orders.order_num
+FROM Customers LEFT OUTER JOIN Orders
+ON Customers.cust_id = Orders.cust_id;
+
+# UNION去除重复行，而UNION ALL不去除重复行
+# 还有EXCEPT（MINUS）及INTERSECT，但不常用
+
+# 插入数据
+INSERT INTO Customers(cust_id,
+                      cust_name,
+                      cust_address,
+                      cust_city,
+                      cust_state,
+                      cust_zip,
+                      cust_country,
+                      cust_contact,
+                      cust_email)
+VALUES('1000000006',
+       ‘Toy Land',
+       '123 Any Street',
+       'New York',
+       'NY',
+       '11111',
+       'USA',
+       NULL,
+       NULL);
+# 还有INSERT SELECT
+
+# 从一个表复制到另一个表
+CREATE TABLE CustCopy AS
+SELECT * FROM Customers;
+
+# 更新数据
+UPDATE Customers
+SET cust_contact = 'Sam Roberts',
+    cust_email = 'sam@toyland.com'
+WHERE cust_id = '1000000006';
+
+# 删除数据
+DELETE FROM Customers
+WHERE cust_id = '1000000006';
+
+# 创建表
+-- 默认时间：DEFAULT CURRENT_DATE()
+
+# 更改表
+ALTER TABLE Vendors
+ADD vend_phone CHAR(20);
+
+ALTER TABLE Vendors
+DROP COLUMN vend_phone;
+
+# 删除表
+DROP TABLE CustCopy;
 ```
 
 ## 基本的MySQL
 启动和登录MySQL：
-```
+```bash
 brew info mysql     # 显示相关信息
 mysql.server start
 mysql -u root -p
