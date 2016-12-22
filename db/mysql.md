@@ -202,7 +202,7 @@ INSERT INTO Customers(cust_id,
                       cust_contact,
                       cust_email)
 VALUES('1000000006',
-       ‘Toy Land',
+       'Toy Land',
        '123 Any Street',
        'New York',
        'NY',
