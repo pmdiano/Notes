@@ -238,6 +238,39 @@ DROP COLUMN vend_phone;
 
 # 删除表
 DROP TABLE CustCopy;
+
+# 视图
+# 创建视图：CREATE VIEW viewname;
+# 删除视图：DROP VIEW viewname;
+CREATE VIEW ProductCustomers AS
+SELECT cust_name, cust_contact, prod_id
+FROM Customers, Orders, OrderItems
+WHERE Customers.cust_id = Orders.cust_id
+AND OrderItems.order_num = Orders.order_num;
+
+# 执行存储过程
+EXECUTE AddNewProduct('Foo', 'Bar', 6.49)
+
+# 事务处理
+-- 事务处理可以用来管理INSERT，UPDATE和DELETE语句。不能回退SELECT语句，也不能回退CREATE或DROP操作。
+START TRANSACTION
+SAVEPOINT name;
+ROLLBACK TO name;
+COMMIT;
+
+# 游标
+-- 创建游标
+DECLARE CustCursor CURSOR
+FOR
+SELECT * FROM Customers
+WHERE cust_email IS NULL;
+
+-- 使用游标
+OPEN CURSOR CustCursor;
+
+# 创建索引
+CREATE INDEX prod_name_ind
+ON Products(prod_name);
 ```
 
 ## 基本的MySQL
