@@ -270,10 +270,10 @@ shell在环境中存储了两种不同的数据：环境变量和shell变量。`
 
 包管理工具：
 
-| 发行版 | 底层工具 | 上层工具 |  
-| ---- | ----------------- | -------------------|  
-| Debian-Style | dpkg | apt-get, aptitude |  
-| Fedora, Red Hat, CentOS | rpm | yum |  
+| 发行版 | 底层工具 | 上层工具 |
+| ---- | ----------------- | -------------------|
+| Debian-Style | dpkg | apt-get, aptitude |
+| Fedora, Red Hat, CentOS | rpm | yum |
 
 ## 存储媒介
 - `mount`：挂载一个文件系统
@@ -439,7 +439,7 @@ major
 
 POSIX把正则表达式的实现分成了两类：基本正则表达式（BRE）和扩展的正则表达式（ERE）。BRE可以辨别以下元字符：`^ $ . [ ] *`，ERE添加了以下元字符：`( ) { } ? + |`。`egrep`支持ERE，`grep -E`也一样。
 ```bash
-± echo "AAA" | grep 'AAA|BBB' 
+± echo "AAA" | grep 'AAA|BBB'
 
 ± echo "AAA" | grep -E 'AAA|BBB'        # ERE的alteration，用`|`来表示
 AAA
@@ -887,3 +887,4 @@ else
     echo "The string '$REPLY' is not a valid filename."
 fi
 ```
+
