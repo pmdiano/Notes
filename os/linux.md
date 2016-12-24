@@ -888,3 +888,75 @@ else
 fi
 ```
 
+## 循环
+```bash
+#!/bin/bash
+# while-count: display a series of numbers
+count=1
+while [ $count -le 5 ]; do
+    echo $count
+    count=$((count + 1))
+done
+echo "Finished."
+```
+
+```bash
+#!/bin/bash
+# until-count: display a series of numbers
+count=1
+until [ $count -gt 5 ]; do
+    echo $count
+    count=$((count + 1))
+done
+echo "Finished."
+```
+
+```bash
+#!/bin/bash
+# while-read: read lines from a file
+while read distro version release; do
+    printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+        $distro \
+        $version \
+        $release
+done < distros.txt
+```
+
+```bash
+#!/bin/bash
+# while-read2: read lines from a file
+sort -k 1,1 -k 2n distros.txt | while read distro version release; do
+    printf "Distro: %s\tVersion: %s\tReleased: %s\n" \
+        $distro \
+        $version \
+        $release
+done
+```
+
+## 调试
+加上`-x`可以打印每一条执行的语句：`#!/bin/bash -x`。加号是追踪输出的默认字符，它包含在`PS4`Shell变量中。使得追踪输出加上行号：`export PS4='$LINENO + '`。`set -x`打开追踪，`set +x`关闭追踪。
+
+## 选择
+```bash
+#!/bin/bash
+read -p "enter word > "
+case $REPLY in
+    [[:alpha:]])    echo "is a single alphabetic character."
+                    ;;
+    [ABC][0-9])     echo "is A, B, or C followed by a digit."
+                    ;;
+    ???)            echo "is three characters long."
+                    ;;
+    *.txt)          echo "is a word ending in '.txt'"
+                    ;;
+    *)              echo "is something else."
+                    ;;
+esac
+```
+一般语法规则为：
+```bash
+case word in
+    [pattern [| pattern]...) commands ;;]...
+esac
+```
+`;;&`允许`case`语句继续执行下一条测试，而不是简单地终止运行。
