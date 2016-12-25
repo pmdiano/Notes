@@ -1010,3 +1010,42 @@ pass_params () {
 pass_params "word" "words with spaces"
 ```
 此外，`bash`还包括一个叫做`getopts`的内部命令，此命令可以用来处理行参数。
+
+## for 循环
+```bash
+for variable [in words]; do
+    commands
+done
+```
+```bash
+for i in A B C D; do echo $i; done
+for i in {A..D}; do echo $i; done
+for i in distros*.txt; do echo $i; done
+```
+`for`命令默认会处理位置参数：
+```bash
+#!/bin/bash
+# longest-word: find longest word in a file
+for i; do
+  if [[ -r $i ]]; then
+    max_word=
+    max_len=0
+    for j in $(strings $i); do
+      len=$(echo $j | wc -c)
+      if (( len > max_len )); then
+        max_len=$len
+        max_word=$j
+      fi
+    done
+    echo "$i: '$max_word' ($max_len characters)"
+  fi
+done
+```
+C-style for loop:
+```bash
+#!/bin/bash
+# simple_counter: demo of C style for command
+for (( i=0; i<5; i=i+1 )); do
+    echo $i;
+done
+```
