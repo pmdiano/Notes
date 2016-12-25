@@ -960,3 +960,53 @@ case word in
 esac
 ```
 `;;&`允许`case`语句继续执行下一条测试，而不是简单地终止运行。
+
+## 位置参数
+```bash
+#!/bin/bash
+# post-param: script to view command line parameters
+echo "
+Number of arguments: $#
+\$0 = $0
+\$1 = $1
+\$2 = $2
+\$3 = $3
+\$4 = $4
+\$5 = $5
+\$6 = $6
+\$7 = $7
+\$8 = $8
+\$9 = $9
+"
+```
+
+```bash
+#!/bin/bash
+# post-param2: script to display all arguments
+count=1
+while [[ $# -gt 0 ]]; do
+    echo "Argument $count = $1"
+    count=$((count + 1))
+    shift
+done
+```
+
+## 处理集体位置参数：$*, $@
+```bash
+#!/bin/bash
+# post-params3: script to demonstrate $* and $@
+print_params () {
+  echo "\$1 = $1"
+  echo "\$2 = $2"
+  echo "\$3 = $3"
+  echo "\$4 = $4"
+}
+pass_params () {
+  echo -e "\n" '$* :';    print_params $*
+  echo -e "\n" '"$*" :';  print_params "$*"
+  echo -e "\n" '$@ :';    print_params $@
+  echo -e "\n" '"$@" :';  print_params "$@"
+}
+pass_params "word" "words with spaces"
+```
+此外，`bash`还包括一个叫做`getopts`的内部命令，此命令可以用来处理行参数。
