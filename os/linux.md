@@ -1179,3 +1179,15 @@ colors["red"]="#ff0000"
 colors["green"]="#00ff00"
 colors["blue"]="#0000ff"
 ```
+
+## 组命令
+```bash
+{ command1; command2; [command3; ...] }
+(command1; command2; [command3; ...])
+```
+
+## 其他
+- 进程替换
+- 捕获：`trap`
+- 生成临时文件名：`mktemp`
+- 异步执行：`wait`。`$!`总是包含放到后台执行的最后一个任务的进程ID号。
