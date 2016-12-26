@@ -1138,3 +1138,44 @@ until ((finished)); do
   ((a<10?++a:(finished=1)))
 done
 ```
+
+## 数组
+数组的赋值方式：`name[subscript]=value`，`name=(value1 value2 ...)`:
+```bash
+days=(Sun Mon Tue Wed Thu Fri Sat) # seems like this subscript starts with 1
+days=([1]=Mon [2]=Tue [3]=Wed [4]=Thu [5]=Fri [6]=Sat) # does not work with Mac
+```
+下标`*`和`@`可以被用来访问数组中的每一个元素，与位置参数一样，`@`表示法在两者中更有用处。
+```bash
+animals=("a dog" "a cat" "a fish")
+for i in "${animals[@]}"; do echo $i; done
+```
+找到数组的下标：`${!array[*]}`, `${!array[@}]}`，Mac并不支持。在数组末尾添加元素：
+```bash
+foo=(a b c)
+echo ${foo[@]}
+foo+=(d e f)
+echo ${foo[@]}
+```
+排序：
+```bash
+#!/bin/bash
+# array-sort
+a=(f e d c b a)
+echo "Original array: ${a[@]}"
+a_sorted=($(for i in "${a[@]}"; do echo $i; done | sort))
+echo "Sorted array: ${a_sorted[@]}"
+```
+删除数组或元素：
+```bash
+foo=(a b c d e f)
+unset 'foo[2]'
+unset foo
+```
+关联数组：
+```bash
+declare -A colors
+colors["red"]="#ff0000"
+colors["green"]="#00ff00"
+colors["blue"]="#0000ff"
+```
