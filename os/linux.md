@@ -1191,3 +1191,4 @@ colors["blue"]="#0000ff"
 - 捕获：`trap`
 - 生成临时文件名：`mktemp`
 - 异步执行：`wait`。`$!`总是包含放到后台执行的最后一个任务的进程ID号。
+- 命名管道：`mkfifo`，`process1 > named_pipe`，`process2 < named_pipe`。
