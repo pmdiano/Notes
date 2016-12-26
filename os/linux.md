@@ -1049,3 +1049,92 @@ for (( i=0; i<5; i=i+1 )); do
     echo $i;
 done
 ```
+
+## 字符串和数字
+
+### 展开
+`${parameter:-word}`：若parameter没有设置或者为空，展开结果是word的值。若parameter不为空，则展开结果是parameter的值。
+
+`${parameter:=word}`：若parameter没有设置或者为空，展开结果是word的值，另外，word的值回赋给parameter。若parameter不为空，展开结果是parameter的值。
+
+`${parameter:?word}`：若parameter没有设置或为空，这种展开导致脚本带有错误退出，并且word的内容会发送到标准错误。若parameter不为空，展开结果是parameter的值。
+
+`${parameter:+word}`：若parameter没有设置或为空，展开结果为空。若parameter不为空，展开结果是word的值（parameter的值不变）。
+
+`${!prefix*}`，`${!prefix@}`展开会返回以prefix开头的已有环境变量名（在Mac下并不work）
+
+`${#parameter}`：展开成由parameter所包含的字符串长度。如果parameter是@或*的话，则展开成位置参数的个数。
+
+`${parameter:offset}`，`${parameter:offset:length}`：展开成parameter的substring。如果offset是负数，则从字符串尾部开始计算，但负号前面要有空格，以免与上面第一条混淆。如果parameter是@，展开结果是length个位置参数，从第offset个位置参数开始。
+
+`${parameter#pattern}`，`${parameter##pattern}`：这些展开从parameter所包含的字符串中清除一部分文字，要匹配定义的pattern，pattern是通配符模式。#清除最短的匹配结果，而##清除最长的匹配结果。
+```bash
+bin[master] % foo=file.txt.zip
+bin[master] % echo ${foo#*.}
+txt.zip
+bin[master] % echo ${foo##*.}
+zip
+```
+
+`${parameter%pattern}`，`${parameter%%pattern}`：和上一条一样，但它们清除的文本从parameter末尾开始。
+
+`${parameter/pattern/string}`，`${parameter//pattern/string}`，`${parameter/#pattern/string}`，`${parameter/%pattern/string}`：对parameter的内容执行查找和替换操作。`//`会替换所有的匹配项，`/#`要求匹配项出现在字符串的开头，而`/%`要求匹配项出现在字符串的末尾。
+
+### 大小写转换
+```bash
+#!/bin/bash
+# ul-declare: demonstrate case conversion via declare
+# does not work well on Mac (needs Bash 4+)
+declare -u upper
+declare -l lower
+if [[ $1 ]]; then
+    upper="$1"
+    lower="$1"
+    echo $upper
+    echo $lower
+fi
+```
+大小写转换：（need Bash 4+）：
+
+- `${parameter,,}`：把parameter的值全部展开为小写字母
+- `${parameter,}`：仅把parameter的第一个字符展开为小写字母
+- `${parameter^^}`：把parameter的值全部展开为大写字母
+- `${parameter^}`：仅把parameter的第一个字符展开为大写字母
+
+### 算数求值和展开
+shell算数只操作整型。算数展开的基本格式：`$((expression))`。
+
+数基：
+
+- `number`：十进制数
+- `0number`：八进制数
+- `0xnumber`：十六进制数
+- `base#number`：base进制数
+
+```bash
+#!/bin/bash
+# demonstrate bash arithmetics
+for ((i = 0; i <= 20; ++i )); do
+  if (( (i % 5) == 0 )); then
+    printf "<%d> " $i
+  else
+    printf "%d " $i
+  fi
+done
+printf "\n"
+```
+
+```bash
+#!/bin/bash
+# arith-loop: script to demonstrate arithmetic operators
+finished=0
+a=0
+printf "a\ta**2\ta**3\n"
+printf "=\t====\t====\n"
+until ((finished)); do
+  b=$((a**2))
+  c=$((a**3))
+  printf "%d\t%d\t%d\n" $a $b $c
+  ((a<10?++a:(finished=1)))
+done
+```
