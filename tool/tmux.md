@@ -1,0 +1,25 @@
+Command:
+- `tmux new -s <session name>`: new session
+- `tmux new -s <session name> -d`: new session in background
+- `Ctrl-b d`: detach from the tmux session
+- `tmux ls`: show tmux sessions
+- `tmux attach`: attach to tmux session
+- `tmux attach -t <session name>`: attach to specific session
+- `tmux kill-session -t <session name>`: kill session
+- `tmux new -s <session name> -n <window name>`: create new session and name the first window
+- `Ctrl-b c`: create a new window within current session
+- `Ctrl-b ,`: rename current window
+- `Ctrl-b n`: next window
+- `Ctrl-b p`: previous window
+- `Ctrl-b 0`: window number 0
+- `Ctrl-b f`: find window by name
+- `Ctrl-b w`: display a visual menu of windows
+- `Ctrl-b &`: close a window
+- `Ctrl-b %`: split window vertically
+- `Ctrl-b "`: split window horizontally
+- `Ctrl-b o`: cycle through the panes
+- `Ctrl-b spacebar`: cycle through default pane layouts
+- `Ctrl-b x`: close a pane
+- `Ctrl-b :`: enter command mode
+- `Ctrl-b q`: momentarily displays pane numbers in each pane
+- `new-window -n processes "top"`: in command mode, open a new window with name "processes" and run top
