@@ -28,3 +28,32 @@ public:
 * The generated destructor is non-virtual unless it's for a class inheriting from a base class that itself declares a virtual destructor.
 * The compiler-generated copy constructor and copy assignment operator simply copy each non-static data member of the source object over to the target object.
 * Compilers reject implicit copy assignment operators in derived classes that inherit from base classes declaring the copy assignment operators `private`.
+* Following code won't compile, because C++ does not provide a way to make a reference refer to a different object:
+
+```cpp
+#include <string>
+using namespace std;
+
+template<class T>
+class NamedObject {
+public:
+  NamedObject(string& name, const T& value)
+    : nameValue(name)
+    , objectValue(value) {
+  }
+
+private:
+  string& nameValue;
+  const T objectValue;
+};
+
+int main() {
+  string newDog("Persephone");
+  string oldDog("Satch");
+  NamedObject<int> p(newDog, 2);
+  NamedObject<int> s(oldDog, 36);
+
+  p = s; // boom
+  return 0;
+}
+```
